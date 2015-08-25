@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html ng-app="zango">
+<head>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Zango’s Web Developer Challenge</title>
+	
+	<!--Stylesheets-->
+	<link rel="stylesheet" href="css/foundation.css">
+	<link rel="stylesheet" href="css/app.css">
+	
+	<!-- Scripts -->
+	<script src="js/vendor/modernizr.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+	<script src="js/app.js"></script>
+	<script
+src="http://maps.googleapis.com/maps/api/js">
+</script>
+
+</head>
+<body ng-controller="usersController as User">
+	<nav class="top-bar" data-topbar role="navigation">
+  		<ul class="title-area">
+    		<li class="name">
+      			<h1><a href="#">Zango App</a></h1>
+    		</li>
+    	</ul>
+    </nav>
+
+<div class="row">
+  <div class="small-9 small-uncentered large-centered large-8 columns"> 
+
+    <table>
+  <thead>
+    <tr>
+      <th width="100">ID</th>
+      <th>Name</th>
+      <th class="show-for-medium-up">Username</th>
+      <th class="show-for-medium-up">Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="record in User.details" data-reveal-id="myModal" ng-click="User.display = record">
+      
+      <td>{{record.id}}</td>
+      <td>{{record.name}}</td>
+      <td class="show-for-medium-up">{{record.username}}</td>
+      <td class="show-for-medium-up">{{record.email}}</td>
+
+    </tr>
+   
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- Reveal Modal -->
+
+<div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" >
+  <h2 id="modalTitle">{{User.display.name}}</h2>
+  <span><strong>ID : </strong>{{User.display.id}}</span><br>
+  <span><strong>Username : </strong>{{User.display.username}}</span><br>
+  <span><strong>Email : </strong>{{User.display.email}}</span><br>
+  <span><strong>Address : </strong>{{User.display.address.street}}, {{User.display.address.suite}}, {{User.display.address.city}}, {{User.display.address.zipcode}}</span>
+  
+  <a id="showMap" class="radius button tiny">See Map</a>
+  
+  <div id="googleMap"></div>
+  
+  <input type="hidden" id="lat" value="{{User.display.address.geo.lat}}" style="display:none">
+  <input type="hidden" id="lng" value="{{User.display.address.geo.lng}}" style="display:none"><br>
+  <span><strong>Phone : </strong>{{User.display.phone}}</span><br>
+  <span><strong>Website : </strong>{{User.display.website}}</span><br>
+  <span><strong>Company : </strong>{{User.display.company.name}} -> {{User.display.company.catchPhrase}}, {{User.display.company.bs}} </span><br>
+
+
+  <a class="close-reveal-modal" aria-label="Close" >&#215;</a>
+</div>
+
+<!-- End of Reveal Modal -->
+
+	<!--Scripts -->
+
+	<script src="js/vendor/jquery.js"></script>
+  	<script src="js/foundation.min.js"></script>
+  	<script>
+    	$(document).foundation();
+  	</script>
+  	<script>
+  		jQuery(document).ready(function() {
+
+    jQuery(document).on("click", "#showMap", function(e) {
+        e.preventDefault();
+
+        $('#googleMap').show();
+        $('#googleMap').css({'width':'500px', 'height':'380px'});
+
+        var lat = $('#lat').val();
+        var lng = $('#lng').val();		
+        initialize(lat,lng);
+        
+
+    });
+
+  		function initialize(lat,lng) {
+       	
+  		var myCenter=new google.maps.LatLng(lat,lng);
+
+        var mapOptions = {
+            center: myCenter,
+            zoom: 15
+        };
+        var map = new google.maps.Map(document.getElementById("googleMap"), mapOptions);
+    	
+    	var marker=new google.maps.Marker({
+  		position:myCenter,
+  		});
+
+		marker.setMap(map);
+
+		}
+
+    	});	
+
+  		jQuery('table').click(function(){
+  			$('#googleMap').hide();
+  		});
+
+  	</script>
+</body>
+</html>
+
